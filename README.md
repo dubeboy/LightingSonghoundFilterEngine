@@ -1,5 +1,5 @@
 <p align="center">
-    <h1 align="center"> ⚡️SonghoundFilterEngine ⚡️ </h1>
+    <h1> ⚡️SonghoundFilterEngine ⚡️ </h1>
     <br>
     <br>
     <a href="http://docs.vapor.codes/3.0/">
@@ -20,6 +20,7 @@
 </p>
 
 
-# About
+## About
 
  This server communicates with firebase and aggregates artists data and top songs to one JSON body
+ will also be the homepage for my app
