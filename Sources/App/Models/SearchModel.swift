@@ -10,5 +10,6 @@ import Vapor
 
 struct SearchModel: Content {
     var location: String
+    //query is the location name
     var query: String
 }
