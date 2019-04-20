@@ -19,11 +19,18 @@ class FirebaseAggregate {
         return try req.content.decode(SearchModel.self).flatMap(to: LocationModel.self) { searchModel in
             print("hello there the search model is \(searchModel)")
             let j = try self.getQueryFirebaseData(req: req, location: searchModel.location, query: searchModel.query)
-            let futureFilteredLocationModels: Future<LocationModel> = j.map(to: LocationModel.self) { location in
-                if (location.name.contains(searchModel.query)) {
-                    return location
+            let futureFilteredLocationModels: Future<LocationModel> = j.map(to: LocationModel.self) { location -> [String: LocationModelValue] in
+                print("the location keys is this: \(location.keys) and the locatio5n from firebase is \(location)")
+                var myLocationModels: [String: LocationModelValue] = [:]
+                // should usef lambda x or for _, _ rather than this
+                location.keys.forEach() { key in
+                    if (location[key]!.name.contains(searchModel.query)) {
+                        // populate my key
+                        myLocationModels[key] = location[key]
+                    }
                 }
-                return LocationModel(name: "", songID: "")
+                //todo: bad way to handle absence
+                return myLocationModels
             }
             return futureFilteredLocationModels
         }
@@ -32,7 +39,8 @@ class FirebaseAggregate {
     private func getQueryFirebaseData(req: Request, location: String, query: String) throws -> Future<LocationModel> {
         // ask for firebase data
         print("called")
-        let url = "\(FIRE_BASE_URL)\(location).json".addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!
+        // force because I know that the string is not null and will never be null
+        let url = "\(FIRE_BASE_URL)\(location.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!).json"
         print("fire url: \(url)")
         let futureResponse: Future<Response> = try req.client().get(url)
         return futureResponse.flatMap(to: LocationModel.self) { res in
