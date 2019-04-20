@@ -23,8 +23,9 @@ class FirebaseAggregate {
                 print("the location keys is this: \(location.keys) and the locatio5n from firebase is \(location)")
                 var myLocationModels: [String: LocationModelValue] = [:]
                 // should usef lambda x or for _, _ rather than this
+                // does not have speling features
                 location.keys.forEach() { key in
-                    if (location[key]!.name.contains(searchModel.query)) {
+                    if (location[key]!.name.lowercased().contains(searchModel.query.lowercased())) {
                         // populate my key
                         myLocationModels[key] = location[key]
                     }
@@ -35,7 +36,8 @@ class FirebaseAggregate {
             return futureFilteredLocationModels
         }
     }
-
+    // should cache the data to a local storage
+    // to mak th search faster yoh
     private func getQueryFirebaseData(req: Request, location: String, query: String) throws -> Future<LocationModel> {
         // ask for firebase data
         print("called")

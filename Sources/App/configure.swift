@@ -16,13 +16,14 @@ public func configure(_ config: inout Config, _ env: inout Environment, _ servic
     // middlewares.use(FileMiddleware.self) // Serves files from `Public/` directory
     middlewares.use(ErrorMiddleware.self) // Catches errors and converts to HTTP response
     services.register(middlewares)
-
-    // Configure a SQLite database
-    let sqlite = try SQLiteDatabase(storage: .memory)
-
+    
+    let dirConfig = DirectoryConfig.detect()
+    services.register(dirConfig)
+    
     // Register the configured SQLite database to the database config.
     var databases = DatabasesConfig()
-    databases.add(database: sqlite, as: .sqlite)
+    let db = try SQLiteDatabase(storage: .file(path: "\(dirConfig.workDir)cupcakes.db"))
+    databases.add(database: db, as: .sqlite)
     services.register(databases)
 
     // Configure migrations
