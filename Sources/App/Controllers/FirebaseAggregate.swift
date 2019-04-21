@@ -14,18 +14,20 @@ class FirebaseAggregate {
     var FIRE_BASE_URL = "https://soundhound-1550224703779.firebaseio.com/"
 
     //todo: should rename to search and should be a get with params
-    func create(_ req: Request) throws -> Future<LocationModel> {
-        print("fefdfdsds")
-        return try req.content.decode(SearchModel.self).flatMap(to: LocationModel.self) { searchModel in
-            print("hello there the search model is \(searchModel)")
-            let j = try self.getQueryFirebaseData(req: req, location: searchModel.location, query: searchModel.query)
+    func searchForSongInArea(_ req: Request) throws -> Future<LocationModel> {
+        
+        guard  let songName = req.query[String.self, at: "songName"] else { throw Abort(.badRequest) }
+        guard  let locationName = req.query[String.self, at: "location"] else { throw Abort(.badRequest) }
+        
+            print("hello there the search model is songName search is \(songName) and location is \(locationName)")
+            let j = try self.getQueryFirebaseData(req: req, location: locationName, query: songName)
             let futureFilteredLocationModels: Future<LocationModel> = j.map(to: LocationModel.self) { location -> [String: LocationModelValue] in
                 print("the location keys is this: \(location.keys) and the locatio5n from firebase is \(location)")
                 var myLocationModels: [String: LocationModelValue] = [:]
                 // should usef lambda x or for _, _ rather than this
                 // does not have speling features
                 location.keys.forEach() { key in
-                    if (location[key]!.name.lowercased().contains(searchModel.query.lowercased())) {
+                    if (location[key]!.name.lowercased().contains(songName.lowercased())) {
                         // populate my key
                         myLocationModels[key] = location[key]
                     }
@@ -34,7 +36,7 @@ class FirebaseAggregate {
                 return myLocationModels
             }
             return futureFilteredLocationModels
-        }
+        
     }
     // should cache the data to a local storage
     // to mak th search faster yoh

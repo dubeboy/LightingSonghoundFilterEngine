@@ -16,7 +16,7 @@ public func routes(_ router: Router) throws {
     let firebaseAggregateController = FirebaseAggregate()
     let todo = TodoController()
     
-    router.post("fire", use: firebaseAggregateController.create)
+    router.get("fire", use: firebaseAggregateController.searchForSongInArea)
     router.get("index", use: todo.index)
     router.post("todos", use: todo.create)
     router.delete("todos", Todo.parameter, use: todo.delete)
