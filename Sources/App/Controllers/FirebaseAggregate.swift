@@ -39,20 +39,41 @@ class FirebaseAggregate {
     // should cache the data to a local storage
     // to mak th search faster yoh
     private func getQueryFirebaseData(req: Request, location: String, query: String) throws -> Future<LocationModel> {
-        // ask for firebase data
         print("called")
-        // force because I know that the string is not null and will never be null
+        return LocationModelValue
+            .query(on: req)
+            .all()
+            .flatMap(to: LocationModel.self, { LocationModelValue in
+                if LocationModelValue.count == 0 {
+                    return try self.queryFromFirebase(req: req, location: location, query: query)
+                } else {
+                    var myLocationModels: [String: LocationModelValue] = [:]
+                    for (i, locModelValue) in LocationModelValue.enumerated() {
+                        myLocationModels["\(i)"] = locModelValue
+                    }
+                    return try myLocationModels.encode(for: req)
+                        .flatMap(to: LocationModel.self) { xy in
+                            return try xy.content.decode(LocationModel.self)
+                    }
+                }
+            })
+   }
+
+    
+    private func queryFromFirebase(req: Request , location: String , query: String) throws -> Future<LocationModel> {
         let url = "\(FIRE_BASE_URL)\(location.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!).json"
         print("fire url: \(url)")
-        let futureResponse: Future<Response> = try req.client().get(url)
+        let futureResponse: Future<Response> = try req.client().get(url)  // do network call here
         return futureResponse.flatMap(to: LocationModel.self) { res in
             print("the response from firebase: \(res)")
-            do {
-                let locationManager = try res.content.decode(LocationModel.self)
-                return locationManager
-            } catch {
-                throw Abort(.noContent)
-            }
+
+            let locationManager = try res.content.decode(LocationModel.self)
+            return locationManager
         }
     }
+    
+    private func saveLocationModelsToLocalDB(locationModel: Future<LocationModel>) {
+        // save to local DB
+    }
+
 }

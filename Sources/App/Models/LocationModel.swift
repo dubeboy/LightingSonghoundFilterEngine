@@ -7,15 +7,21 @@
 
 import Foundation
 import Vapor
+import FluentSQLite
 
-//struct LocationModel: Content {
-//     // this is the song name
-//    var name: String
-//    var songID: String
-//}
 typealias LocationModel = [String: LocationModelValue]
 
-struct LocationModelValue: Content {
-    let name: String
-    let songID: Int
+struct LocationModelValue: SQLiteModel {
+    var id: Int?
+    var name: String
+    var songID: Int
 }
+
+/// Allows `LocationModelValue` to be used as a dynamic migration.
+extension LocationModelValue: Migration { }
+
+/// Allows `LocationModelValue` to be encoded to and decoded from HTTP messages.
+extension LocationModelValue: Content { }
+
+/// Allows `LocationModelValue` to be used as a dynamic parameter in route definitions.
+extension LocationModelValue: Parameter { }
