@@ -22,7 +22,7 @@ public func configure(_ config: inout Config, _ env: inout Environment, _ servic
     
     // Register the configured SQLite database to the database config.
     var databases = DatabasesConfig()
-    let db = try SQLiteDatabase(storage: .file(path: "\(dirConfig.workDir)cupcakes.db"))
+    let db = try SQLiteDatabase(storage: .file(path: "\(dirConfig.workDir)locationModelValuesCache.db"))
     databases.add(database: db, as: .sqlite)
     services.register(databases)
 
