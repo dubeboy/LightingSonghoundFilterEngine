@@ -38,6 +38,10 @@ class FirebaseAggregate {
             return futureFilteredLocationModels
         
     }
+
+    func index(_ req: Request) throws -> Future<View> {
+        return try req.view().render("index")
+    }
     // should cache the data to a local storage
     // to mak th search faster yoh
     private func getQueryFirebaseData(req: Request, location: String, query: String) throws -> Future<LocationModel> {
