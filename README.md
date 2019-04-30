@@ -24,3 +24,25 @@
 
  This server communicates with firebase and aggregates artists data and top songs to one JSON body
  will also be the homepage for my app
+
+## Search API
+
+The Search API allows you to search for favourite music in your area.
+
+issue a get request to  /fire with the params songName="" and location="". 
+where location is the suburb name 
+
+### Example
+we will use apples infinite loop location.
+`curl -XGET https://sh100xdivinedube33.vapor.cloud/fire?songName='Blank '&location='Cupertino'`
+
+### Response
+
+`
+{
+    "907104698": { 
+                    "name":"Blank Space",
+                    "songID":907104698
+                 }
+ }
+`
